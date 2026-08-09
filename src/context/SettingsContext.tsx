@@ -8,7 +8,8 @@ import * as SecureStore from "expo-secure-store";
 
 const SERVER_URL_KEY = "buddy_server_url";
 const API_KEY_KEY = "buddy_api_key";
-const DEFAULT_SERVER_URL = "https://your-server.example.com";
+const DEFAULT_SERVER_URL =
+  process.env.EXPO_PUBLIC_DEFAULT_SERVER_URL || "https://your-server.example.com";
 
 type SettingsContextValue = {
   serverUrl: string;

@@ -30,7 +30,8 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
+# local env files (personal config: real server URL, bundle IDs, team ID)
+.env
 .env*.local
 
 # typescript
