@@ -1,5 +1,7 @@
 # Buddy
 
+**Your LLM stays home. You don't have to.**
+
 A native chat app (iOS + Android) for a self-hosted AI stack — talks to [Open WebUI](https://github.com/open-webui/open-webui) instead of a browser tab, with voice, web search, and real smart-home control built in.
 
 Built with React Native + Expo (SDK 57), TypeScript.
