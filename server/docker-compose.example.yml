@@ -1,0 +1,119 @@
+## Buddy's backend stack — see server/README.md for the full setup guide.
+##
+## This gives you Open WebUI (the chat/API server Buddy talks to) plus
+## optional add-ons: SearXNG (web search), Kokoro (text-to-speech),
+## Home Assistant (smart home control), and nginx-proxy-manager (HTTPS
+## reverse proxy, only needed if you want a real domain / access from
+## outside your home network).
+##
+## None of these services require special hardware. They all run fine on
+## a spare PC, an old laptop, a mini PC, a Raspberry Pi 4/5, or a cloud VM.
+## The one piece NOT in this file is your LLM backend (Ollama / LM Studio /
+## etc.) — see server/README.md for why, and how to point Open WebUI at it.
+
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3000:8080"
+    volumes:
+      - ./data/backend:/app/backend/data
+    networks:
+      - web-network
+    environment:
+      # Remove the ENABLE_WEB_SEARCH/SEARCH_API/SEARXNG_URL lines below if
+      # you're not running the searxng service.
+      - ENABLE_WEB_SEARCH=true
+      - SEARCH_API=searxng
+      - SEARXNG_URL=http://searxng:8080
+      # Remove the AUDIO_TTS_* lines below if you're not running kokoro.
+      - AUDIO_TTS_ENGINE=openai
+      - AUDIO_TTS_OPENAI_API_BASE_URL=http://kokoro:8880/v1
+      - AUDIO_TTS_OPENAI_API_KEY=not-needed
+      - AUDIO_TTS_MODEL=kokoro
+    depends_on:
+      - kokoro
+      - searxng
+
+  # --- Optional: text-to-speech, used for Buddy's 🔊 "speak reply" button ---
+  kokoro:
+    image: ghcr.io/remsky/kokoro-fastapi-cpu:v0.2.1
+    container_name: kokoro
+    restart: unless-stopped
+    ports:
+      - "8880:8880"
+    networks:
+      - web-network
+
+  # --- Optional: reverse proxy + free HTTPS certs. Only needed if you want
+  # a real domain name / to reach this from outside your home network.
+  # Skip this entirely for LAN-only use — Buddy can talk to
+  # http://<your-machine's-lan-ip>:3000 directly (see server/README.md).
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - ./npm/data:/data
+      - ./npm/letsencrypt:/etc/letsencrypt
+    environment:
+      - DISABLE_IPV6=true
+    networks:
+      - web-network
+
+  # --- Optional: private web search, used for Buddy's 🔎 search toggle ---
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    environment:
+      - SEARXNG_SECRET_KEY=${SEARXNG_SECRET_KEY}
+      # Add your own machine's hostname/LAN IP here if you get a 403 from
+      # SearXNG — it only accepts requests for hosts listed here.
+      - SEARXNG_BASE_URL=http://localhost:8082
+      - ALLOWED_HOSTS=open-webui,searxng,localhost,127.0.0.1
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    networks:
+      - web-network
+
+  # --- Optional: smart home control, used by Buddy's Home Assistant tool ---
+  # (openwebui-tools/home_assistant.py at the repo root)
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    restart: unless-stopped
+    # Bridge networking (ports:) is used deliberately, NOT network_mode: host.
+    # On Docker Desktop for Mac, host networking is emulated through a Linux
+    # VM rather than being true host networking, and Home Assistant's startup
+    # can hang indefinitely waiting on it. Bridge networking works reliably
+    # everywhere (Mac, Windows, Linux) and is what's used here.
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=Etc/UTC # set to your own timezone, e.g. America/Los_Angeles
+    networks:
+      - web-network
+
+networks:
+  web-network:
+    driver: bridge

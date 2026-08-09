@@ -40,6 +40,17 @@ module.exports = {
           backgroundColor: "#0b0b0c",
         },
       ],
+      [
+        "expo-build-properties",
+        {
+          // Android blocks plain HTTP to non-localhost hosts by default.
+          // Allow it so a plain http://<lan-ip>:port server URL works
+          // without requiring a reverse proxy / TLS cert for local use.
+          android: {
+            usesCleartextTraffic: true,
+          },
+        },
+      ],
     ],
   },
 };

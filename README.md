@@ -35,11 +35,13 @@ Buddy itself only ever talks to Open WebUI's API — it has no direct knowledge 
 - Android Studio + SDK, for Android builds (physical device or emulator)
 - A free Apple Developer account (for `appleTeamId` / device code signing) if building for a physical iPhone
 
-**Backend (assumed already running somewhere on your network):**
-- An [Open WebUI](https://github.com/open-webui/open-webui) instance, reachable over HTTPS, with `ENABLE_API_KEYS=true`
-- At least one model available through it (local via LM Studio/Ollama, or any configured provider)
+**Backend:**
+- An [Open WebUI](https://github.com/open-webui/open-webui) instance, reachable from your phone, with `ENABLE_API_KEYS=true`
+- At least one model available through it (a local backend like Ollama/LM Studio, or any configured provider)
 - *(optional, for web search)* a SearXNG instance wired into Open WebUI's web search settings
 - *(optional, for smart-home control)* a Home Assistant instance reachable from wherever Open WebUI runs, plus a Long-Lived Access Token for it
+
+Don't have any of this running yet? **[server/README.md](./server/README.md)** is a full beginner-friendly walkthrough — no self-hosting experience or specific hardware assumed, just a computer that can stay on and Docker installed.
 
 ## Setup
 
@@ -111,6 +113,7 @@ src/api/client.ts               Open WebUI API client (chat, STT, TTS, wake-word
 src/screens/ChatScreen.tsx      chat UI, mic/wake-word/search controls
 src/screens/SettingsScreen.tsx  server URL / API key entry
 openwebui-tools/home_assistant.py   Open WebUI Tool for Home Assistant control (installed server-side, not part of the app bundle)
+server/                        backend setup guide + example docker-compose.yml (see server/README.md)
 ```
 
 ## Privacy note

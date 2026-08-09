@@ -33,6 +33,7 @@ yarn-error.*
 # local env files (personal config: real server URL, bundle IDs, team ID)
 .env
 .env*.local
+server/.env
 
 # typescript
 *.tsbuildinfo
