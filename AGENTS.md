@@ -8,7 +8,7 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before 
 
 - **Buddy client** (this repo): Expo SDK 57 React Native app. Standard commands are in the root `package.json` / `README.md` (`npm start`, `npx expo run:ios|android`, `npx tsc --noEmit`).
 - **Open WebUI backend**: not started from this repo. Production instance used for cloud testing: `https://buddy.matttesch.com`. Optional self-host walkthrough: `server/README.md`.
-- Auth for API calls: `BUDDY_API_KEY` (Open WebUI account API key). Do not put the key in `EXPO_PUBLIC_*` vars or commit it.
+- Auth for API calls: `BUDDY_SERVER_URL` + `BUDDY_API_KEY` (Open WebUI account API key). If those env vars are already set in the shell, use them — do not re-prompt. Do not put the key in `EXPO_PUBLIC_*` vars or commit it.
 
 ### Cloud VM gotchas
 
