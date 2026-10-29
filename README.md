@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/logo.png" alt="Buddy logo" width="500"></p>
+
 # Buddy
 
 **Your LLM stays home. You don't have to.**
