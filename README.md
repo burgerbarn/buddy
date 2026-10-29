@@ -2,20 +2,26 @@
 
 **Your LLM stays home. You don't have to.**
 
-A native chat app (iOS + Android) for a self-hosted AI stack — talks to [Open WebUI](https://github.com/open-webui/open-webui) instead of a browser tab, with voice, web search, and real smart-home control built in.
+A native iOS and Android chat app for a self-hosted AI stack. It talks to your own
+[Open WebUI](https://github.com/open-webui/open-webui) over your own network: a local model answers, Whisper
+hears you, Kokoro talks back, SearXNG searches, and Home Assistant turns the lights off when you ask. No
+account, no cloud, no one else's server in the loop. One API key, stored in the phone's secure enclave.
 
-Built with React Native + Expo (SDK 57), TypeScript.
+React Native + Expo SDK 57, TypeScript. Companion app to [lightBot](https://github.com/burgerbarn/PublicRobot),
+the home robot on the same stack.
 
-## Features
+## What it does
 
-- **Text chat** — streams responses from Open WebUI's OpenAI-compatible `/api/chat/completions` endpoint (SSE).
-- **Voice in/out** — record a question with the mic, get it transcribed via Open WebUI's Whisper endpoint and auto-sent; tap 🔊 on any reply to hear it spoken back via Open WebUI's TTS endpoint.
-- **"Hey Buddy" wake word** — optional hands-free mode that listens for "hey/hi/ok buddy", beeps, then records and sends your command automatically.
-- **Web search** — toggle to have replies backed by a self-hosted SearXNG instance.
-- **Home Assistant control** — ask Buddy to turn things on/off, dim lights, change colors, or control media players; it calls a real Home Assistant instance through a custom Open WebUI tool (included in this repo, see below).
-- Auth via a single API key stored in `expo-secure-store` — no accounts, no cloud, everything stays on the local network.
+| | |
+|---|---|
+| **Chat** | Streams replies from Open WebUI's OpenAI-compatible `/api/chat/completions` over SSE |
+| **Voice** | Hold the mic, Whisper transcribes through Open WebUI, the question sends itself; tap 🔊 on any reply and Kokoro reads it |
+| **"Hey Buddy"** | Optional hands-free mode: wake word, beep, record, send |
+| **Web search** | One toggle; Open WebUI does the retrieval against your SearXNG instance server-side |
+| **Smart home** | "Dim the living room," "pause the TV," "is the front door locked": a real Home Assistant, driven by an Open WebUI tool shipped in this repo |
+| **Privacy** | Real server URL, bundle ids and team id live in a gitignored `.env`; nothing tracked ever carries a real value |
 
-## Stack
+## How it's wired
 
 | Layer | What it is |
 |---|---|
@@ -26,7 +32,10 @@ Built with React Native + Expo (SDK 57), TypeScript.
 | Web search | Self-hosted [SearXNG](https://github.com/searxng/searxng) |
 | Smart home | [Home Assistant](https://www.home-assistant.io/), driven via `openwebui-tools/home_assistant.py` |
 
-Buddy itself only ever talks to Open WebUI's API — it has no direct knowledge of LM Studio, Whisper, Kokoro, SearXNG, or Home Assistant; those are all wired up server-side.
+Buddy itself only ever talks to Open WebUI's API. It has no direct knowledge of LM Studio, Whisper, Kokoro,
+SearXNG, or Home Assistant; those are wired up server-side, which is why the app stays small and the stack
+can change underneath it. The whole backend, from a blank machine with Docker, is walked through in
+[server/README.md](./server/README.md).
 
 ## Requirements
 
