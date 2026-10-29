@@ -2,6 +2,8 @@
 
 **Your LLM stays home. You don't have to.**
 
+**B.U.D.D.Y.** — Basic Universal Discount Data Yapper.
+
 A native iOS and Android chat app for a self-hosted AI stack. It talks to your own
 [Open WebUI](https://github.com/open-webui/open-webui) over your own network: a local model answers, Whisper
 hears you, Kokoro talks back, SearXNG searches, and Home Assistant turns the lights off when you ask. No
